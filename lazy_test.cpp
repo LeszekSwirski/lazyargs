@@ -11,7 +11,7 @@ void f(lazy_t<int> x)
 int main()
 {
     int x = 0;
-    f(lazy_t<int>([&]{ return x++; }));
+    f(lazy<int>([&]{ return x++; }));
     f(make_lazy([&]{ return x++; }));
     f(LAZY( x++ ));
 }

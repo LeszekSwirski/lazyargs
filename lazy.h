@@ -4,11 +4,11 @@
 #include <functional>
 
 template<typename T>
-class lazy_t
+class lazy
 {
 
 public:
-    lazy_t(std::function<T()> func) : func(func), evaluated(false)
+    lazy(std::function<T()> func) : func(func), evaluated(false)
     {
     }
 
@@ -28,9 +28,9 @@ private:
 };
 
 template<typename F>
-auto make_lazy(F func) -> lazy_t<decltype(func())>
+auto make_lazy(F func) -> lazy<decltype(func())>
 {
-    return lazy_t<decltype(func())>(func);
+    return lazy<decltype(func())>(func);
 }
 
 #define LAZY(EXPR) make_lazy([&]{ return EXPR; })
