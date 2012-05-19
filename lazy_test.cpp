@@ -2,7 +2,7 @@
 
 #include "lazy.h"
 
-void f(lazy_t<int> x)
+void f(lazy<int> x)
 {
     std::cout << "1. x = " << x() << std::endl;
     std::cout << "2. x = " << x() << std::endl;
