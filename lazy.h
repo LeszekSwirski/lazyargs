@@ -8,15 +8,15 @@ class lazy
 {
 
 public:
-    lazy(std::function<T()> func) : func(func), evaluated(false)
+    lazy(std::function<T()> func) : func(func)
     {
     }
 
     const T& operator()()
     {
-        if (!evaluated) {
+        if (func) {
             value = func();
-            evaluated = true;
+            func = nullptr;
         }
         return value;
     }
@@ -24,7 +24,6 @@ public:
 private:
     std::function<T()> func;
     T value;
-    bool evaluated;
 };
 
 template<typename F>
