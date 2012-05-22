@@ -2,35 +2,46 @@
 #define __LAZY_H__
 
 #include <functional>
+#include <memory>
 
 template<typename T>
 class lazy
 {
 
 public:
-    lazy(std::function<T()> func) : func(func), evaluated(false)
+    template<
+        typename U,
+        typename URet = decltype(std::declval<U>()()),
+        typename CheckReturnType = typename std::enable_if<std::is_convertible<URet, T>::value>::type
+    >
+    lazy(U&& func) : func(std::forward<U>(func))
+    {
+    }
+    
+    lazy(lazy<T>&& other) = default;
+    lazy(lazy<T>& other) = delete;
+    
+    lazy(T&& val) : value(new T(std::forward<T>(val)))
     {
     }
 
     const T& operator()()
     {
-        if (!evaluated) {
-            value = func();
-            evaluated = true;
+        if (!value) {
+            value.reset(new T(std::forward<T>(func())));
         }
-        return value;
+        return *value;
     }
 
 private:
     std::function<T()> func;
-    T value;
-    bool evaluated;
+    std::unique_ptr<T> value;
 };
 
 template<typename F>
-auto make_lazy(F func) -> lazy<decltype(func())>
+auto make_lazy(F&& func) -> lazy<decltype(func())>
 {
-    return lazy<decltype(func())>(func);
+    return lazy<decltype(func())>(std::forward<F>(func));
 }
 
 #define LAZY(EXPR) make_lazy([&]{ return EXPR; })
