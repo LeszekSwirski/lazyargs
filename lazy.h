@@ -44,6 +44,7 @@ auto make_lazy(F&& func) -> lazy<decltype(func())>
     return lazy<decltype(func())>(std::forward<F>(func));
 }
 
-#define LAZY(EXPR) make_lazy([&]{ return EXPR; })
+#define LAZY_BLOCK(...) make_lazy([&]{ __VA_ARGS__; })
+#define LAZY(...) LAZY_BLOCK(return __VA_ARGS__;)
 
 #endif//__LAZY_H__
